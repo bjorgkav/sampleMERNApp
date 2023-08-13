@@ -26,9 +26,18 @@ app.use("/api/workouts", workoutRoutes); //only uses the routes in workouts.js i
 
 //#endregion
 
-//start listening for requests at certain port
-//const port = 8080;
+//connect to db
 
-app.listen(process.env.PORT, () => {
-    console.log(`Listening on port ${process.env.PORT} (accessible via http://localhost:${process.env.PORT})...`)
-});
+mongoose.connect(process.env.MONGODB_URI) //asynchronous process, then() will wait for connect() to finish
+    .then(() => {
+        console.log("Connected to MongoDB Atlas database...");
+
+        //start listening for requests only if connection succeeded
+
+        app.listen(process.env.PORT, () => {
+            console.log(`Listening on port ${process.env.PORT} (accessible via http://localhost:${process.env.PORT})...`)
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+    })
